@@ -17,6 +17,8 @@ func main() {
 
 	app := fiber.New()
 
+	users := []User{}
+
 	app.Get("/test", func(c *fiber.Ctx) error {
 		return c.SendString("Hello, World!")
 	})
