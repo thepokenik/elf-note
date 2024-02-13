@@ -97,6 +97,15 @@ func main() {
 		})
 	})
 
+	// return all
+
+	app.Get("/api/users", func(c *fiber.Ctx) error {
+		return c.JSON(fiber.Map{
+			"users": users,
+		})
+	})
+	
+
 	log.Fatal(app.Listen(":4000"))
 
 }
