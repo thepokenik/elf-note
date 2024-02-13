@@ -9,5 +9,7 @@ Elf Note é um editor de texto colaborativo, uma ferramenta que permite que vár
 - Electron
 - React
 - TypeScript
+- GoLang
+- PostgreSQL
 
 
