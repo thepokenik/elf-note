@@ -1,0 +1,134 @@
+:root {
+    /* TEXT COLORS */
+    --text-color: white;
+    --text-color-secundary: rgba(255, 255, 255, 0.7);
+}
+
+.register-main-content {
+    position: absolute;
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg, #222 20%, #111 80%);
+}
+
+.register-section-conent {
+    width: 100%;
+}
+
+.form-content {
+    height: 100%;
+    display: grid;
+}
+
+div.auth-title {
+    width: 100%;
+}
+
+div.auth-title h1 {
+    color: var(--text-color);
+    font-weight: 400;
+    font-size: 30px;
+}
+
+.input-content {
+    display: grid;
+    padding: 0.8rem 0rem 0.8rem 0rem;
+}
+
+.input-content label {
+    font-size: 20px;
+    padding: 0.5rem 0rem 0.5rem 0rem;
+    color: var(--text-color-secundary);
+}
+
+.input-content input {
+    height: 35px;
+    width: 270px;
+    padding: 0.5rem;
+    background-color: transparent;
+    border: solid 1px #333;
+    border-radius: 10px;
+    color: white;
+}
+
+.input-content input:focus {
+    outline: solid 1px white;
+}
+
+.dsp-flex {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+.forgot-password,
+.create-account {
+    width: 100%;
+    display: grid;
+    justify-content: end;
+}
+
+.create-account {
+    justify-content: center;
+}
+
+.forgot-password span,
+.create-account span {
+    color: var(--text-color-secundary);
+    text-decoration: underline;
+    transition: all 0.2s ease-in;
+}
+
+.forgot-password span:hover,
+.create-account span:hover {
+    cursor: pointer;
+    color: var(--text-color);
+}
+
+.btn>button {
+    color: var(--text-color-secundary);
+    cursor: pointer;
+    width: 269px;
+    height: 45px;
+    background-color: #3A0057;
+    border: none;
+    border-radius: 10px;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 20px;
+    margin: 0.8rem 0rem 0.8rem 0rem;
+}
+
+.align-content {
+    display: grid;
+    justify-content: flex-start;
+}
+
+.authFieldImage {
+    display: grid;
+    place-items: center;
+    color: white;
+}
+
+.imagePreview {
+    display: grid;
+    place-items: center;
+}
+
+.imagePreview img {
+    width: 15rem;
+    height: 15rem;
+    border: dotted 2px grey;
+    border-radius: 20%;
+    cursor: pointer;
+}
+
+.authFieldImage>span {
+    position: absolute;
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.515);
+}
