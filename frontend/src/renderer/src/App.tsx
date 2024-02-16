@@ -1,10 +1,13 @@
+import { Link } from 'react-router-dom';
 import './css/app.css';
 
 function App(): JSX.Element {
 
   return (
     <>
-      <h1>Hello World!</h1>
+      <Link to={"auth/login"}>
+        <h1>Hello World!</h1>
+      </Link>
     </>
   )
 }
