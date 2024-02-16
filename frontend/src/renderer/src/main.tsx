@@ -11,7 +11,6 @@ import Register from './screen/auth/register/Register';
 const router = createBrowserRouter([
   {
     path: "/",
-    // element: <ProtectedRoute element={App} />,
     element: <App />,
   },
   {
