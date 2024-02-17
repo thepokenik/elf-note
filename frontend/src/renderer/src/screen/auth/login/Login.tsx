@@ -1,11 +1,56 @@
 /* eslint-disable prettier/prettier */
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import ScrollReveal from 'scrollreveal';
 import '../css/style.css';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
+interface User {
+    id: null;
+    username: string;
+    email: string;
+    password: string;
+    profilePic: File | null;
+}
 
 const Login: React.FC = () => {
+
+    const navigate = useNavigate();
+
+    const [user, setUser] = useState<User>({
+        id: null,
+        username: '',
+        email: '',
+        password: '',
+        profilePic: null
+    });
+
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        console.log(user);
+        fetch('http://localhost:4000/users/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(user),
+            }).then((response) => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    console.log('Status:', response.status);
+                    return response.text().then(text => {
+                        console.log('Body:', text);
+                        throw new Error('Network response was not ok.');
+                    });
+                }
+            }).then((data) => {
+                console.log('Success:', data);
+            }).catch((error) => {
+                console.error('There has been a problem with your fetch operation:', error);
+            });
+
+                navigate('/');
+            }
 
     useEffect(() => {
         const sr = ScrollReveal();
@@ -27,7 +72,7 @@ const Login: React.FC = () => {
         <main className="register-main-content">
             <section className='register-section-conent'>
 
-                <form className='form-content'>
+                <form className='form-content' onSubmit={handleSubmit}>
                     <div className='dsp-flex'>
                         <div className='dsp-grid'>
                             <div className='auth-title'>
@@ -37,12 +82,20 @@ const Login: React.FC = () => {
                             </div>
                             <div className='input-content'>
                                 <label htmlFor="email">Email:</label>
-                                <input type="text" />
+                                <input
+                                type="text"
+                                value={user.email || ''}
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                                    setUser((prev) => ({ ...prev, email: e.target.value }))}
+                            />
                             </div>
                             <div className='align-content'>
                                 <div className='input-content'>
                                     <label htmlFor="senha">Password:</label>
-                                    <input type="password" />
+                                    <input type="password" value={user.password || ''}
+                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                                            setUser((prev) => ({ ...prev, password: e.target.value }))}
+                                    />
                                 </div>
                                 <div className='forgot-password'>
                                     {/* <Link to={""}> */}
