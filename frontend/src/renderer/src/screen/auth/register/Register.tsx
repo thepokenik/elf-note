@@ -1,14 +1,34 @@
 import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ScrollReveal from 'scrollreveal';
-import user from '../assets/user.svg';
+import userBaseImage from '../assets/user.svg';
+
+type ProfileImage = File | null;
+
+interface User {
+    id: null;
+    username: string;
+    email: string;
+    password: string;
+    profilePic: ProfileImage;
+}
 
 /* eslint-disable prettier/prettier */
 const Register: React.FC = () => {
 
     const [profileImage, setProfileImage] = useState<File | null>(null);
 
+    const [user, setUser] = useState<User>({
+        id: null,
+        username: '',
+        email: '',
+        password: '',
+        profilePic: profileImage
+    });
+
     const inputRef = useRef<HTMLInputElement | null>(null);
+
+    const navigate = useNavigate();
 
     const handleImageClick = () => {
         if (inputRef.current) {
@@ -39,10 +59,23 @@ const Register: React.FC = () => {
 
     }, []);
 
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+        fetch('http://localhost:4000/register', {
+            method: 'POST',
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(user),
+        }).then(() => {
+            console.log('New User Registered!');
+        });
+        navigate('/auth/login');
+    }
+
     return (
         <main className="register-main-content">
             <section className='register-section-conent'>
-                <form className='form-content'>
+                <form className='form-content' onSubmit={handleSubmit}>
                     <div className='dsp-flex'>
                         <div className='dsp-grid'>
                             <div className='auth-title'>
@@ -51,17 +84,30 @@ const Register: React.FC = () => {
                                 </h1>
                             </div>
                             <div className='input-content'>
-                                <label htmlFor="email">Username:</label>
-                                <input type="text" />
+                                <label htmlFor="email">Email:</label>
+                                <input
+                                type="text"
+                                value={user.email || ''}
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                                    setUser((prev) => ({ ...prev, email: e.target.value }))}
+                            />
                             </div>
                             <div className='input-content'>
-                                <label htmlFor="email">Email:</label>
-                                <input type="text" />
+                                <label htmlFor="username">Username:</label>
+                                <input
+                                type="text"
+                                value={user.username || ''}
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                                    setUser((prev) => ({ ...prev, username: e.target.value }))}
+                            />
                             </div>
                             <div className='align-content'>
                                 <div className='input-content'>
                                     <label htmlFor="senha">Password:</label>
-                                    <input type="password" />
+                                    <input type="password" value={user.password || ''}
+                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                                            setUser((prev) => ({ ...prev, password: e.target.value }))}
+                                    />
                                 </div>
                             </div>
 
@@ -81,7 +127,7 @@ const Register: React.FC = () => {
                         <div className="authFieldImage">
                             <span>Select your profile image</span>
                             <div className="imagePreview" onClick={handleImageClick}>
-                                <img src={handleImagePreview() || user} alt="userImage" />
+                                <img src={handleImagePreview() || userBaseImage} alt="userImage" />
                             </div>
                             <input
                                 ref={inputRef}
