@@ -3,8 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import ScrollReveal from 'scrollreveal';
 import userBaseImage from '../assets/user.svg';
 
-type ProfileImage = File | null;
-
 interface User {
     id: null;
     username: string;
