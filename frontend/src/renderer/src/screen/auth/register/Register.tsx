@@ -10,7 +10,6 @@ interface User {
     username: string;
     email: string;
     password: string;
-    profilePic: ProfileImage;
 }
 
 /* eslint-disable prettier/prettier */
@@ -18,12 +17,13 @@ const Register: React.FC = () => {
 
     const [profileImage, setProfileImage] = useState<File | null>(null);
 
+    const form = new FormData();
+
     const [user, setUser] = useState<User>({
         id: null,
         username: '',
         email: '',
         password: '',
-        profilePic: profileImage
     });
 
     const inputRef = useRef<HTMLInputElement | null>(null);
@@ -62,13 +62,24 @@ const Register: React.FC = () => {
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        fetch('http://localhost:4000/register', {
+        form.append('user', JSON.stringify(user));
+        form.append('profilePic', profileImage || '');
+
+        console.log(form.get('user'));
+        fetch('http://localhost:4000/users/register', {
             method: 'POST',
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(user),
-        }).then(() => {
-            console.log('New User Registered!');
+            body: form,
+        }).then((response) => {
+            if (response.ok) {
+                return response.json();
+            }
+            throw new Error('Network response was not ok.');
+        }).then((data) => {
+            console.log(data);
+        }).catch((error) => {
+            console.error('There has been a problem with your fetch operation:', error);
         });
+
         navigate('/auth/login');
     }
 
