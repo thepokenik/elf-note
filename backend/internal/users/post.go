@@ -52,40 +52,40 @@ func registerUser(c *fiber.Ctx) error {
 
 // TODO - Implement the rest of the functions
 
-func getUsers(c *fiber.Ctx) error {
-	return c.JSON(fiber.Map{
-		"users": users,
-	})
-}
+// func getUsers(c *fiber.Ctx) error {
+// 	return c.JSON(fiber.Map{
+// 		"users": users,
+// 	})
+// }
 
-func getUserbyID(c *fiber.Ctx) error {
-	id := c.Params("id")
-	userID, err := uuid.Parse(id)
+// func getUserbyID(c *fiber.Ctx) error {
+// 	id := c.Params("id")
+// 	userID, err := uuid.Parse(id)
 
-	if err != nil {
-		return c.Status(400).JSON(fiber.Map{
-			"error":   true,
-			"message": "Invalid ID",
-		})
-	}
+// 	if err != nil {
+// 		return c.Status(400).JSON(fiber.Map{
+// 			"error":   true,
+// 			"message": "Invalid ID",
+// 		})
+// 	}
 
-	if err != nil {
-		return c.Status(400).JSON(fiber.Map{
-			"error":   true,
-			"message": "Invalid ID",
-		})
-	}
+// 	if err != nil {
+// 		return c.Status(400).JSON(fiber.Map{
+// 			"error":   true,
+// 			"message": "Invalid ID",
+// 		})
+// 	}
 
-	for _, user := range users {
-		if user.ID == userID {
-			return c.JSON(fiber.Map{
-				"user": user,
-			})
-		}
-	}
+// 	for _, user := range users {
+// 		if user.ID == userID {
+// 			return c.JSON(fiber.Map{
+// 				"user": user,
+// 			})
+// 		}
+// 	}
 
-	return c.Status(404).JSON(fiber.Map{
-		"error":   true,
-		"message": "User not found",
-	})
-}
+// 	return c.Status(404).JSON(fiber.Map{
+// 		"error":   true,
+// 		"message": "User not found",
+// 	})
+// }
