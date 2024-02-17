@@ -14,6 +14,6 @@ func (p Service) Create(user *User) error {
 	return p.Repository.CreateUser(user)
 }
 
-func (p Service) GetByEmail(email string) (*User, error) {
+func (p Service) GetByEmail(email string) (string, string, error) {
 	return p.Repository.GetByEmail(email)
 }
