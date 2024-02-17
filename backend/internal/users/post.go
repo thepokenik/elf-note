@@ -88,18 +88,16 @@ func registerUser(c *fiber.Ctx) error {
 
 func login(c *fiber.Ctx) error {
 
-	var user User
+	var user *User
 
-	userData := c.FormValue("user")
-	if err := json.Unmarshal([]byte(userData), &user); err != nil {
-		fmt.Println("Error parsing user data", err)
+	if err := c.BodyParser(&user); err != nil {
 		return c.Status(400).JSON(fiber.Map{
 			"error":   true,
-			"message": "Invalid user data",
+			"message": "Invalid JSON",
 		})
 	}
 
-	user, err := service.GetByEmail(user.Email)
+	id, hashedPassword, err := service.GetByEmail(user.Email)
 
 	if err != nil {
 		return c.Status(400).JSON(fiber.Map{
@@ -108,50 +106,16 @@ func login(c *fiber.Ctx) error {
 		})
 	}
 
-	if !auth.CheckPassword(user.Password, user.Password) {
+	if !auth.CheckPassword(user.Password, hashedPassword) {
 		return c.Status(400).JSON(fiber.Map{
 			"error":   true,
 			"message": "Invalid email or password",
 		})
+		
+	}
 
+	return c.Status(200).JSON(fiber.Map{
+		"message": "User logged in",
+		"user": id,
+	})
 }
-
-// TODO - Implement the rest of the functions
-
-// func getUsers(c *fiber.Ctx) error {
-// 	return c.JSON(fiber.Map{
-// 		"users": users,
-// 	})
-// }
-
-// func getUserbyID(c *fiber.Ctx) error {
-// 	id := c.Params("id")
-// 	userID, err := uuid.Parse(id)
-
-// 	if err != nil {
-// 		return c.Status(400).JSON(fiber.Map{
-// 			"error":   true,
-// 			"message": "Invalid ID",
-// 		})
-// 	}
-
-// 	if err != nil {
-// 		return c.Status(400).JSON(fiber.Map{
-// 			"error":   true,
-// 			"message": "Invalid ID",
-// 		})
-// 	}
-
-// 	for _, user := range users {
-// 		if user.ID == userID {
-// 			return c.JSON(fiber.Map{
-// 				"user": user,
-// 			})
-// 		}
-// 	}
-
-// 	return c.Status(404).JSON(fiber.Map{
-// 		"error":   true,
-// 		"message": "User not found",
-// 	})
-// }
