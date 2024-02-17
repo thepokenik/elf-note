@@ -11,7 +11,7 @@ import (
 
 func main() {
 
-	connectionString := "user=postgres password=Hotwheels16? host=localhost port=5432 dbname=elf"
+	connectionString := "host=localhost port=5432 user=postgres password=postgres dbname=elfnote"
 	conn, err := db.NewConnection(connectionString)
 	if err != nil {
 		panic(err)
