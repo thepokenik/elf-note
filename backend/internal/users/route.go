@@ -8,6 +8,9 @@ func SetRoutes(r fiber.Router) {
 	// Create an user
 	users.Post("/register", registerUser)
 
+	// Login
+	users.Post("/login", login)
+
 	// // Get all users
 	// users.Get("/", getUsers)
 

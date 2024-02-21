@@ -11,7 +11,7 @@ import (
 
 func main() {
 
-	connectionString := "user=postgres password=Hotwheels16? host=localhost port=5432 dbname=elf"
+	connectionString := "host=localhost port=5432 user=postgres dbname=elf"
 	conn, err := db.NewConnection(connectionString)
 	if err != nil {
 		panic(err)
@@ -22,7 +22,7 @@ func main() {
 	app := fiber.New()
 
 	app.Use(cors.New(cors.Config{
-		AllowOrigins: "http://localhost:3000",
+		AllowOrigins: "http://localhost:5173",
 		AllowHeaders: "Origin, Content-Type, Accept",
 	}))
 

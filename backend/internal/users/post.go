@@ -1,6 +1,10 @@
 package users
 
 import (
+	"encoding/json"
+	"fmt"
+	"io"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/thepokenik/elf-note/internal/auth"
 	"github.com/thepokenik/elf-note/internal/db"
@@ -18,14 +22,46 @@ func Configure() {
 
 func registerUser(c *fiber.Ctx) error {
 
-	var user *User
+	var user User
 
-	if err := c.BodyParser(&user); err != nil {
+	userData := c.FormValue("user")
+	if err := json.Unmarshal([]byte(userData), &user); err != nil {
+		fmt.Println("Error parsing user data", err)
 		return c.Status(400).JSON(fiber.Map{
 			"error":   true,
-			"message": "Invalid JSON",
+			"message": "Invalid user data",
 		})
 	}
+
+	// Get the profile picture file
+	file, err := c.FormFile("profilePic")
+	if err != nil {
+		return c.Status(400).JSON(fiber.Map{
+			"error":   true,
+			"message": "Error getting profile picture",
+		})
+	}
+
+	// Open the file
+	profilePic, err := file.Open()
+	if err != nil {
+		return c.Status(500).JSON(fiber.Map{
+			"error":   true,
+			"message": "Error opening profile picture",
+		})
+	}
+	defer profilePic.Close()
+
+	// Read the file into a byte array
+	profilePicBytes, err := io.ReadAll(profilePic)
+	if err != nil {
+		return c.Status(500).JSON(fiber.Map{
+			"error":   true,
+			"message": "Error reading profile picture",
+		})
+	}
+
+	user.ProfilePic = profilePicBytes
 
 	hashedPassword, err := auth.HashPassword(user.Password)
 
@@ -38,7 +74,7 @@ func registerUser(c *fiber.Ctx) error {
 
 	user.Password = hashedPassword
 
-	if err := service.Create(user); err != nil {
+	if err := service.Create(&user); err != nil {
 		return c.Status(400).JSON(fiber.Map{
 			"error": err.Error(),
 		})
@@ -50,42 +86,36 @@ func registerUser(c *fiber.Ctx) error {
 	})
 }
 
-// TODO - Implement the rest of the functions
+func login(c *fiber.Ctx) error {
 
-// func getUsers(c *fiber.Ctx) error {
-// 	return c.JSON(fiber.Map{
-// 		"users": users,
-// 	})
-// }
+	var user *User
 
-// func getUserbyID(c *fiber.Ctx) error {
-// 	id := c.Params("id")
-// 	userID, err := uuid.Parse(id)
+	if err := c.BodyParser(&user); err != nil {
+		return c.Status(400).JSON(fiber.Map{
+			"error":   true,
+			"message": "Invalid JSON",
+		})
+	}
 
-// 	if err != nil {
-// 		return c.Status(400).JSON(fiber.Map{
-// 			"error":   true,
-// 			"message": "Invalid ID",
-// 		})
-// 	}
+	id, hashedPassword, err := service.GetByEmail(user.Email)
 
-// 	if err != nil {
-// 		return c.Status(400).JSON(fiber.Map{
-// 			"error":   true,
-// 			"message": "Invalid ID",
-// 		})
-// 	}
+	if err != nil {
+		return c.Status(400).JSON(fiber.Map{
+			"error":   true,
+			"message": "Invalid email or password",
+		})
+	}
 
-// 	for _, user := range users {
-// 		if user.ID == userID {
-// 			return c.JSON(fiber.Map{
-// 				"user": user,
-// 			})
-// 		}
-// 	}
+	if !auth.CheckPassword(user.Password, hashedPassword) {
+		return c.Status(400).JSON(fiber.Map{
+			"error":   true,
+			"message": "Invalid email or password",
+		})
+		
+	}
 
-// 	return c.Status(404).JSON(fiber.Map{
-// 		"error":   true,
-// 		"message": "User not found",
-// 	})
-// }
+	return c.Status(200).JSON(fiber.Map{
+		"message": "User logged in",
+		"user": id,
+	})
+}

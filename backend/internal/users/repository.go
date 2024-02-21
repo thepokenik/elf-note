@@ -30,3 +30,29 @@ func (r *Repository) CreateUser(user *User) error {
 
 	return err
 }
+
+func (r *Repository) GetByEmail(email string) (string, string, error) {
+	
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	var user User
+
+	var hashedPassword string
+
+	var id string
+
+	row := r.Conn.QueryRow(
+		ctx,
+		"SELECT email, id, password FROM users WHERE email = $1",
+		email,
+	)
+
+	err := row.Scan(
+		&user.Email,
+		&id,
+		&hashedPassword,
+	)
+
+	return id, hashedPassword, err
+}
